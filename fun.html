@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Special Question 💖</title>
+
+<style>
+:root {
+    --pink: #ff4d6d;
+    --dark-pink: #c9184a;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, #fff0f3, #ffccd5);
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    overflow: hidden;
+}
+
+/* Floating emojis */
+.deco {
+    position: fixed;
+    opacity: 0.4;
+    font-size: 24px;
+    animation: float 6s infinite ease-in-out;
+}
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Card */
+.container {
+    background: rgba(255,255,255,0.95);
+    padding: 40px;
+    width: 340px;
+    text-align: center;
+    border-radius: 40px;
+    box-shadow: 0 25px 60px rgba(255,77,109,0.3);
+    z-index: 10;
+}
+
+img {
+    width: 180px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: var(--pink);
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.sub {
+    color: #7a1f2b;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+/* Buttons */
+.buttons {
+    position: relative;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+}
+
+button {
+    padding: 14px 35px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    color: white;
+    background: var(--pink);
+    box-shadow: 0 8px 20px rgba(255,77,109,0.4);
+    transition: 0.2s;
+}
+
+#yesBtn:hover {
+    background: var(--dark-pink);
+    transform: scale(1.1);
+}
+
+#noBtn {
+    background: #999;
+    position: relative;
+}
+
+/* Corner label */
+#corner {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    background: white;
+    color: var(--pink);
+    padding: 10px 18px;
+    font-weight: 900;
+    border-radius: 20px;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 999;
+}
+
+/* Floating love */
+.love {
+    position: fixed;
+    bottom: -50px;
+    animation: floatUp linear forwards;
+    z-index: 5;
+}
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-120vh); opacity: 0; }
+}
+
+/* Fireworks */
+#fireworks {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+</style>
+</head>
+
+<body>
+
+<div id="fireworks"></div>
+<div id="corner">Thank You Madam Jii 💖</div>
+
+<div class="container">
+    <!-- PUT YOUR OWN GIF HERE -->
+    <img id="gif" src="Do you love me .gif">
+
+    <h1 id="question">Do You Love Me ??</h1>
+    <div class="sub" id="sub">Batao Batao 🙈</div>
+
+    <div class="buttons">
+        <button id="yesBtn">YES 💖</button>
+        <button id="noBtn">NO 😢</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fireworks-js@2.x/dist/index.umd.js"></script>
+
+<script>
+// Background emojis
+const emojis = ["💖","✨","🌸","🎀","🧸"];
+for(let i=0;i<20;i++){
+    const d=document.createElement("div");
+    d.className="deco";
+    d.innerText=emojis[Math.floor(Math.random()*emojis.length)];
+    d.style.left=Math.random()*100+"vw";
+    d.style.top=Math.random()*100+"vh";
+    d.style.animationDelay=Math.random()*5+"s";
+    document.body.appendChild(d);
+}
+
+const question = document.getElementById("question");
+const sub = document.getElementById("sub");
+const gif = document.getElementById("gif");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const corner = document.getElementById("corner");
+
+let step = 0;
+let lastStage = false;
+
+// 🔹 UPDATED QUESTIONS ONLY
+const stages = [
+    {
+        q: "Please Think Again !! 🥲",
+        s: "Naa Maat Bolna 😟",
+        g: "Ekbar or sochlo.gif"
+    },
+    {
+        q: "Maanjao Na Madam Jii 🙏",
+        s: "Bohot Galat Bat Hai Yrr 😭",
+        g: "Manjao na .jpeg"
+    }
+];
+
+// NO runaway
+function moveNo(){
+    const padding = 80;
+    const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+    const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+    noBtn.style.position="fixed";
+    noBtn.style.left=Math.random()*maxX+"px";
+    noBtn.style.top=Math.random()*maxY+"px";
+}
+
+noBtn.addEventListener("click", ()=>{
+    if(step < stages.length){
+        question.innerText = stages[step].q;
+        sub.innerText = stages[step].s;
+        gif.src = stages[step].g;
+        step++;
+
+        if(step === stages.length){
+            lastStage = true;
+            noBtn.innerText = "NO 💔";
+            noBtn.addEventListener("mouseenter", moveNo);
+            document.addEventListener("mousemove", e=>{
+                if(!lastStage) return;
+                const r=noBtn.getBoundingClientRect();
+                if(Math.hypot(e.clientX-(r.left+r.width/2),e.clientY-(r.top+r.height/2))<120){
+                    moveNo();
+                }
+            });
+        }
+    }
+});
+
+// YES click celebration
+yesBtn.addEventListener("click", ()=>{
+    question.innerHTML = "Yes I Knew It 😊<br>I Love You Too Boss";
+    sub.innerText = "Itni Khusiii 😘";
+    gif.src = "Final.gif";
+
+    document.querySelector(".buttons").style.display="none";
+    corner.style.display="block";
+
+    // Fireworks
+    const fireworks = new Fireworks.default(document.getElementById("fireworks"));
+    fireworks.start();
+    setTimeout(()=>fireworks.stop(),6000);
+
+    // Floating love emojis
+    setInterval(()=>{
+        const love=document.createElement("div");
+        love.className="love";
+        love.innerText=["❤️","💖","💕","💗"][Math.floor(Math.random()*4)];
+        love.style.left=Math.random()*100+"vw";
+        love.style.fontSize=(Math.random()*30+15)+"px";
+        love.style.animationDuration=(Math.random()*3+3)+"s";
+        document.body.appendChild(love);
+        setTimeout(()=>love.remove(),6000);
+    },250);
+});
+</script>
+
+</body>
+</html>
